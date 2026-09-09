@@ -1,0 +1,26 @@
+{
+  "keychain": { "service": "nju.smail" },
+  "imap": { "host": "imap.exmail.qq.com", "port": 993, "secure": true },
+  "smtp": { "host": "smtp.exmail.qq.com", "port": 465, "secure": true },
+  "folders": {
+    "inbox": "INBOX",
+    "sent": null,
+    "sentCandidates": ["Sent Messages", "已发送", "Sent"]
+  },
+  "sentAutoSave": null,
+  "classification": {
+    "excludeAddressPatterns": ["noreply", "no-reply", "notice", "newsletter"],
+    "excludeAddresses": [],
+    "excludeDomains": [],
+    "recipientsMax": 5,
+    "schoolDomains": ["nju.edu.cn", "smail.nju.edu.cn"]
+  },
+  "signature": null,
+  "signatureExample": "Best regards,\nMinwoo Park",
+  "llm": {
+    "mode": "claude-cli",
+    "claudePath": null,
+    "model": "claude-sonnet-5",
+    "maxRetries": 3
+  }
+}

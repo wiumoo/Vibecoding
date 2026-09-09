@@ -1,0 +1,22 @@
+{
+  "name": "task2-nju-smail",
+  "private": true,
+  "version": "0.1.0",
+  "description": "NJU smail continuous fetch + drafted replies with human-approved send (Task2)",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "cred:setup": "python3 scripts/cred-setup.py",
+    "mail:cred-verify": "node src/cli/cred-verify.mjs",
+    "mail:probe-send": "node src/cli/probe-send.mjs",
+    "mail:llm-verify": "node src/cli/llm-verify.mjs",
+    "test": "node --test tests/"
+  },
+  "dependencies": {
+    "imapflow": "^1.0.191",
+    "mailparser": "^3.7.4",
+    "nodemailer": "^7.0.9"
+  }
+}
