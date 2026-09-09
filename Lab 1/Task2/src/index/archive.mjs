@@ -33,6 +33,39 @@ function toMarkdown(msg, id) {
   return `${fm}\n\n# ${msg.subject || '(no subject)'}\n\n${msg.text || ''}\n`;
 }
 
+/**
+ * Read an archived record by id. Tries monthHint first, then scans month dirs
+ * (covers a missing/wrong month hint). ENOENT → null; other I/O errors
+ * propagate (never silently swallowed).
+ */
+export async function readArchiveById(settings, id, monthHint) {
+  const L = layoutOf(settings);
+  const tryRead = async (p) => {
+    try {
+      return JSON.parse(await fs.readFile(p, 'utf8'));
+    } catch (e) {
+      if (e.code === 'ENOENT') return null;
+      throw e;
+    }
+  };
+  if (monthHint) {
+    const hit = await tryRead(path.join(L.archiveDir, monthHint, `${id}.json`));
+    if (hit) return hit;
+  }
+  let months = [];
+  try {
+    months = await fs.readdir(L.archiveDir);
+  } catch (e) {
+    if (e.code !== 'ENOENT') throw e;
+  }
+  for (const m of months) {
+    if (m === monthHint) continue;
+    const hit = await tryRead(path.join(L.archiveDir, m, `${id}.json`));
+    if (hit) return hit;
+  }
+  return null;
+}
+
 /** Write both files atomically. Returns the archive id. */
 export async function writeArchive(settings, msg) {
   const { id, dir, jsonFile, mdFile } = archivePaths(settings, msg);

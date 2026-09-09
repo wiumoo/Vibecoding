@@ -47,6 +47,21 @@ export async function normalizeMessage(source, meta) {
   const references = refList(parsed);
   if (inReplyTo && !references.includes(inReplyTo)) references.push(inReplyTo);
 
+  // Minimal headers kept for classification (plan §6.1 bulk/list detection).
+  const h = parsed.headers || new Map();
+  const flat = (v) => {
+    if (v == null) return null;
+    if (Array.isArray(v)) return v.map((x) => flat(x)).filter(Boolean).join(' ');
+    if (typeof v === 'object') return v.value != null ? String(v.value) : JSON.stringify(v);
+    return String(v);
+  };
+  const hget = (k) => (h.get ? flat(h.get(k)) : null);
+  const headers = {
+    precedence: hget('precedence'),
+    'list-id': hget('list-id'),
+    'list-unsubscribe': hget('list-unsubscribe'),
+  };
+
   return {
     schema_version: SCHEMA_VERSION,
     mail_key: mailKey,
@@ -67,6 +82,7 @@ export async function normalizeMessage(source, meta) {
       contentType: a.contentType || '',
       saved: false,
     })),
+    headers,
     classification: null, // set in M3
     direction: meta.direction,
     backfilled: !!meta.backfilled,
