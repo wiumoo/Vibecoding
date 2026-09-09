@@ -60,12 +60,4 @@ npm run mail:agent -- purge    # ⚠️ 로컬 데이터 전부 삭제 (DELETE �
 - 비밀번호: macOS Keychain (`nju.smail`)
 - Git에는 코드·설계 문서만 — 메일 본문·비밀번호는 절대 커밋되지 않습니다.
 
-## 모델·토큰 사용량
 
-초안 작성에만 `claude -p`(격리 실행)를 사용합니다. 매 호출이 `state/usage.jsonl`에 기록되고 `mail:db status`에서 집계됩니다.
-
-| 단계 | 모델 | 사용량 |
-|---|---|---|
-| 초안 생성 (헤드리스, 누적) | claude-sonnet-5 | 6 calls · ~10.6K in / 68 out tokens · ~$0.46 |
-
-(수동 대화 세션의 사용량은 자동 집계되지 않습니다.)
