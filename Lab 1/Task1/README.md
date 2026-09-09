@@ -1,5 +1,17 @@
 # Task1 — NJU ehall Personal Data Collector + Local Viewer
 
+## 0. Model & token usage
+
+| Stage | Model | Tokens (approx.) | Cost |
+|---|---|---|---|
+| Prompt writing & plan design | GPT-6 Astra Medium | ~1.2M | Free (within quota) |
+| Implementation | DeepSeek-V4-Flash (high reasoning) | ~7.8M | ≈ ¥12 (CNY) |
+
+- **GPT-6 Astra Medium** was used for drafting prompts and designing the plans (`plan.md`, `plan-web.md`) — about **1.2M tokens, free within quota**.
+- **DeepSeek-V4-Flash (high)** was used for implementation — about **7.8M tokens, ≈ ¥12 CNY**.
+
+---
+
 A personal, Mac-only assistant for NJU ehall academic data. Two parts:
 
 ## 1. Data collection (scheduled)
