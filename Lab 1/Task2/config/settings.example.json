@@ -17,6 +17,7 @@
   },
   "signature": null,
   "signatureExample": "Best regards,\nMinwoo Park",
+  "mobile": { "enabled": false, "draftsFolder": null, "draftsCandidates": ["Drafts", "草稿箱"] },
   "llm": {
     "mode": "claude-cli",
     "claudePath": null,

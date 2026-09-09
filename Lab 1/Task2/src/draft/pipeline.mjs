@@ -24,6 +24,7 @@ import {
 import { resolveSignature, attachSignature } from './signature.mjs';
 import { runIsolated, wrapMailData, usageOf } from './llm.mjs';
 import { composeDraft, lintDraftBody } from './draftfile.mjs';
+import { resolveDraftsFolder, buildDraftRfc822, appendDraft, deleteDraftById } from '../mobile/drafts.mjs';
 
 const log = (l) => process.stdout.write(l + '\n');
 
@@ -212,7 +213,31 @@ export async function draftForMessage(ctx, msg, { retryCount = 0 } = {}) {
   if (relatedDrafts.length) extra.related_drafts = relatedDrafts;
   await recordStatus(ctx, msg, draftId, threadKey, 'drafted', extra);
   log(`  ${draftId}: drafted (cited ${gen.citedNumbers.join(',') || 'none'})`);
+
+  // Mobile channel (plan-04): put a body-only copy in server Drafts for iPhone.
+  if (settings.mobile?.enabled && client) {
+    const draftsFolder = await draftsFolderOf(ctx);
+    if (draftsFolder) {
+      const rfc = buildDraftRfc822({
+        id: draftId, from: myAddress, to: replyRecipients(msg), cc: [],
+        subject: replySubject(msg.subject), bodyText: body,
+        inReplyTo: msg.message_id || null, references,
+      });
+      const ok = await appendDraft(client, draftsFolder, rfc);
+      log(`  ${draftId}: server Drafts APPEND ${ok ? 'ok' : 'failed (best-effort)'}`);
+    } else {
+      log(`  ${draftId}: mobile enabled but Drafts folder not found`);
+    }
+  }
   return 'drafted';
+}
+
+/** Resolve the server Drafts folder once per run, memoized on ctx (finding: avoid
+ *  a LIST round-trip per message). */
+async function draftsFolderOf(ctx) {
+  if (ctx._draftsFolder !== undefined) return ctx._draftsFolder;
+  ctx._draftsFolder = ctx.client ? await resolveDraftsFolder(ctx.client, ctx.settings) : null;
+  return ctx._draftsFolder;
 }
 
 function findThreadKey(threads, mailKey) {
@@ -267,6 +292,13 @@ async function handleStaleDrafts(ctx, msg, newDraftId, threadKey) {
     await appendEvent(ctx.settings, sup);
     ctx.statesMap.set(ledgerKey(ev.mailKey, 'incoming'), sup);
     log(`  ${ev.id}: superseded by ${newDraftId} (same thread)`);
+    // Remove the stale copy from the phone (plan-04 lifecycle) so it can't be sent.
+    if (ctx.settings.mobile?.enabled && ctx.client) {
+      const df = await draftsFolderOf(ctx);
+      const irt = ev.mailKey && ev.mailKey.startsWith('<') ? ev.mailKey : null; // draft's In-Reply-To
+      const n = await deleteDraftById(ctx.client, df, ev.id, { inReplyTo: irt });
+      log(n ? `  ${ev.id}: removed ${n} server Drafts copy (superseded)` : `  ${ev.id}: no server Drafts copy removed (may linger on phone — remove manually)`);
+    }
   }
   if (related.length) log(`  ${newDraftId}: related drafts from same sender: ${related.join(', ')}`);
   return related;

@@ -1,6 +1,9 @@
-# Plan 04 — iPhone Mail 승인 채널 (4단계, Task2에서 분리)
+# Plan 04 — iPhone Mail 승인 채널 (4단계)
 
-> PLAN만. Task2 MVP(M1–M4)에 포함되지 않는다. Task2가 이미 제공하는 기반: 파일 기반 초안, Sent 폴더 동기화, `mail:send`의 pre-SMTP 타기기 발송 감지.
+> 상태: **서버 사이드 구현 완료**(2026-09-09), 실기기 종단 검증 대기. `settings.mobile.enabled`(기본 OFF)로 켠다 — OFF이면 M1–M4 동작 불변.
+> 코드: `src/mobile/drafts.mjs`(APPEND/헤더 삭제/폴백 매칭), `src/mobile/detect-sends.mjs`(폰 발송 감지), draft 파이프라인·`mail:send`·`mail:sync`에 게이트 연결.
+> 실검증(폰 불요): Drafts 폴더 탐색=`Drafts`(SPECIAL-USE), 본문만 APPEND→헤더 조회 1건→`deleteDraftById` 삭제→잔여 0건. UIDPLUS 지원(M1 확정)이나 삭제는 헤더 로컬 매칭으로 처리(iOS 재APPEND 대비).
+> Task2 기반 재사용: 파일 기반 초안, Sent 폴더 동기화, `mail:send`의 pre-SMTP 타기기 발송 감지.
 
 ## 개념
 
@@ -32,6 +35,14 @@ smail이 표준 IMAP이므로 iPhone 기본 Mail 앱을 앱 개발 없이 승인
 - [ ] 발송 시 In-Reply-To 보존 여부 (→ 폴백 확정)
 - [ ] APPENDUID 지원 여부
 
-## 한계: 맥 sleep
+## 한계: 맥 sleep (결정: 한계로 문서화)
 
-launchd는 맥이 잠들면 안 돈다 → 노트북을 닫아 두면 새 초안이 폰에 안 뜬다. 착수 전 결정: `pmset repeat wake` 정기 기상 / 전원 연결 시 sleep 방지 / 한계로 감수.
+launchd는 맥이 잠들면 안 돈다 → 노트북을 닫아 두면 새 초안이 폰에 안 뜬다. **결정(2026-09-09): 한계로 감수·문서화** — 시스템 전원 설정은 바꾸지 않는다. "맥이 깨어 있을 때만 새 초안이 폰에 반영된다"가 이 채널의 전제다. 즉시성이 필요해지면 `caffeinate`(전원 연결 시)나 `pmset repeat wake`를 사용자가 직접 적용할 수 있다.
+
+## 실기기 종단 검증 (사용자 단계, 폰 필요)
+
+서버 사이드는 검증됐고, 아래는 iPhone이 있어야 확정된다:
+1. iPhone Mail에 smail 계정 추가 + 계정 설정에서 **임시 저장함(Drafts)·보낸 메일함(Sent)을 서버 폴더로 매핑**.
+2. `settings.json`에 `"mobile": { "enabled": true }` 설정 후 `mail:sync` → iPhone 임시 저장함에 초안이 뜨는지.
+3. 폰에서 편집·발송 → 다음 `mail:sync`가 `detected phone send`로 감지하고 원장 `sent` + Drafts 정리하는지.
+4. **In-Reply-To 보존 여부**: 감지 로그의 `via`가 `in-reply-to`면 iOS가 헤더를 보존한 것, `fallback`이면 To+제목+시간창으로 잡은 것 — 어느 쪽이 동작하는지 확정.

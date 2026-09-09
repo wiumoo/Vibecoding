@@ -18,6 +18,7 @@ import { connect, resolveSentFolder } from '../fetch/imap.mjs';
 import { parseFrontmatter, extractBody, lintSendBody } from '../draft/draftfile.mjs';
 import { alreadySentReply } from '../send/detect.mjs';
 import { sendMail, appendToSent, buildRfc822 } from '../send/smtp.mjs';
+import { resolveDraftsFolder, deleteDraftById } from '../mobile/drafts.mjs';
 
 const out = (l = '') => process.stdout.write(l + '\n');
 const addrOf = (s) => {
@@ -108,6 +109,12 @@ async function main() {
       out(appended ? 'appended a copy to Sent.' : 'Sent APPEND failed (best-effort) — next sync will pick up the server copy if any.');
     } else {
       out('server auto-saves to Sent; next sync will archive the outgoing copy.');
+    }
+    // Mobile channel: remove the phone's Drafts copy so it can't be re-sent (plan-04).
+    if (settings.mobile?.enabled) {
+      const df = await resolveDraftsFolder(client, settings);
+      const n = await deleteDraftById(client, df, id, { inReplyTo: fm.in_reply_to || null });
+      out(n ? `removed ${n} server Drafts copy.` : 'no server Drafts copy removed (if one lingers on the phone, delete it manually).');
     }
   } finally {
     if (client) await client.logout().catch(() => {});

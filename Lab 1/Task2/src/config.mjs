@@ -35,6 +35,7 @@ export async function loadSettings() {
     folders: merge('folders'),
     classification: merge('classification'),
     llm: merge('llm'),
+    mobile: merge('mobile'),
   };
   return cached;
 }

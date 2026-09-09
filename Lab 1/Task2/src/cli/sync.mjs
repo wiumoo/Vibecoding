@@ -22,6 +22,33 @@ import { monthDir } from '../state/mailkey.mjs';
 import { connect, resolveSentFolder, fetchNew, folderHead } from '../fetch/imap.mjs';
 import { draftForMessage } from '../draft/pipeline.mjs';
 import { resolveClaude } from '../draft/llm.mjs';
+import { resolveDraftsFolder, deleteDraftById } from '../mobile/drafts.mjs';
+import { scanSentForReply } from '../mobile/detect-sends.mjs';
+
+/** Mobile channel (plan-04): mark a drafted incoming 'sent' if a reply to it now
+ *  appears in Sent (sent from the phone), and clean up its server Drafts copy. */
+async function detectPhoneSends(settings, client, statesMap, sentFolder) {
+  const draftsFolder = await resolveDraftsFolder(client, settings);
+  const pending = [...statesMap.values()].filter(
+    (e) => e.direction === 'incoming' && ['drafted', 'send_failed'].includes(e.status)
+  );
+  for (const ev of pending) {
+    const msg = await readArchiveById(settings, ev.id, ev.month);
+    if (!msg) continue;
+    const recipient = msg.reply_to?.address || msg.from?.address;
+    if (!recipient) continue;
+    const since = ev.at ? new Date(Date.parse(ev.at) - 24 * 3600 * 1000) : undefined;
+    const hit = await scanSentForReply(client, sentFolder, {
+      recipient, messageId: msg.message_id, subject: msg.subject, sinceDate: since,
+    });
+    if (!hit.found) continue;
+    const sent = { mailKey: ev.mailKey, direction: 'incoming', month: ev.month, id: ev.id, threadKey: ev.threadKey, from: ev.from, status: 'sent', sentAt: new Date().toISOString(), via: `phone(${hit.via})` };
+    await appendEvent(settings, sent);
+    statesMap.set(ledgerKey(ev.mailKey, 'incoming'), sent);
+    const n = await deleteDraftById(client, draftsFolder, ev.id, { inReplyTo: msg.message_id || null });
+    log(`  ${ev.id}: detected phone send (${hit.via}) → sent${n ? `, removed ${n} Drafts copy` : ''}`);
+  }
+}
 
 /** Draft step (plan §2.2 step ③): classify + draft each incoming 'new' message. */
 async function draftStep(settings, client, statesMap, threadsRef, sentFolder, inbox, account) {
@@ -138,6 +165,10 @@ async function main() {
     for (const { folder, direction } of order) {
       state = await processFolder(settings, client, folder, direction, state, threadsRef, statesMap);
       await writeState(settings, state); // persist cursor progress per folder
+    }
+    // Mobile channel (plan-04): detect phone-sent replies before drafting.
+    if (settings.mobile?.enabled) {
+      await detectPhoneSends(settings, client, statesMap, sentFolder);
     }
     // Draft step: classify + draft incoming 'new' messages (plan §2.2 step ③).
     await draftStep(settings, client, statesMap, threadsRef, sentFolder, inbox, conn.account);
