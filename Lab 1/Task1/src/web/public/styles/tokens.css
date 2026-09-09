@@ -1,0 +1,133 @@
+/* tokens.css — design tokens for light/dark/system. Everything else consumes
+   these variables so a single source of truth drives the whole UI. */
+:root {
+  color-scheme: light;
+  --bg: #f6f7fb;
+  --bg-subtle: #eef0f6;
+  --surface: #ffffff;
+  --surface-2: #f3f5fa;
+  --surface-3: #eaeef6;
+  --border: #e2e6ef;
+  --border-strong: #cdd4e2;
+  --text: #1b2333;
+  --text-2: #59637a;
+  --text-3: #8a93a8;
+
+  --accent: #4f46e5;
+  --accent-ink: #ffffff;
+  --accent-soft: #e9e8fd;
+  --accent-border: #c9c6fa;
+
+  --ok: #0e9f6e;
+  --ok-soft: #e2f6ee;
+  --ok-border: #b7e6d5;
+  --warn: #b45309;
+  --warn-soft: #fdf0dc;
+  --warn-border: #f2d9ab;
+  --danger: #d14444;
+  --danger-soft: #fdeaea;
+  --danger-border: #f3c1c1;
+  --info: #2563eb;
+  --info-soft: #e5effe;
+  --info-border: #bcd4fb;
+
+  --shadow-1: 0 1px 2px rgba(23, 29, 43, 0.05);
+  --shadow-2: 0 8px 24px rgba(23, 29, 43, 0.08);
+  --shadow-3: 0 18px 48px rgba(23, 29, 43, 0.16);
+
+  --radius-s: 8px;
+  --radius-m: 12px;
+  --radius-l: 16px;
+
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+  --space-5: 24px; --space-6: 32px; --space-7: 48px;
+
+  --text-base: 15px;
+  --text-sm: 13px;
+  --text-xs: 12px;
+  --line-base: 1.6;
+
+  --font-ui: system-ui, -apple-system, "SF Pro KR", "Apple SD Gothic Neo",
+    "Pretendard", "Segoe UI", Roboto, "Noto Sans KR", "PingFang SC",
+    "Microsoft YaHei", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
+    "Liberation Mono", monospace;
+
+  --ease: cubic-bezier(0.2, 0.7, 0.3, 1);
+  --dur: 160ms;
+
+  /* course accent palette (assigned by stable hash of course code) */
+  --acc-0: #6366f1; --acc-0-soft: #eef0fe;
+  --acc-1: #0ea5a4; --acc-1-soft: #e2f6f6;
+  --acc-2: #3b82f6; --acc-2-soft: #e7f0fe;
+  --acc-3: #a855f7; --acc-3-soft: #f6ecfe;
+  --acc-4: #f59e0b; --acc-4-soft: #fdf3e0;
+  --acc-5: #ec4899; --acc-5-soft: #fdecf5;
+  --acc-6: #84cc16; --acc-6-soft: #f0f8e2;
+  --acc-7: #64748b; --acc-7-soft: #eef1f5;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #10141d;
+  --bg-subtle: #151b27;
+  --surface: #181f2b;
+  --surface-2: #1f2837;
+  --surface-3: #26304a;
+  --border: #2a3448;
+  --border-strong: #3a4660;
+  --text: #e8ecf5;
+  --text-2: #a6b0c4;
+  --text-3: #7d879c;
+
+  --accent: #818cf8;
+  --accent-ink: #12162a;
+  --accent-soft: #2b2b52;
+  --accent-border: #4a4a8f;
+
+  --ok: #34d399;
+  --ok-soft: #123a2e;
+  --ok-border: #1f5a48;
+  --warn: #fbbf24;
+  --warn-soft: #3a2d12;
+  --warn-border: #6b5218;
+  --danger: #f87171;
+  --danger-soft: #431f22;
+  --danger-border: #7a3238;
+  --info: #60a5fa;
+  --info-soft: #16283f;
+  --info-border: #2a4a74;
+
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-2: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-3: 0 18px 48px rgba(0, 0, 0, 0.55);
+
+  --acc-0: #818cf8; --acc-0-soft: #232a52;
+  --acc-1: #2dd4bf; --acc-1-soft: #14362f;
+  --acc-2: #60a5fa; --acc-2-soft: #162a46;
+  --acc-3: #c084fc; --acc-3-soft: #351d52;
+  --acc-4: #fbbf24; --acc-4-soft: #3a2d12;
+  --acc-5: #f472b6; --acc-5-soft: #471d37;
+  --acc-6: #a3e635; --acc-6-soft: #293a12;
+  --acc-7: #94a3b8; --acc-7-soft: #25303f;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--text-base);
+  line-height: var(--line-base);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+button { font: inherit; color: inherit; }
+input { font: inherit; }
+a { color: var(--accent); text-decoration: none; }
+::selection { background: var(--accent-soft); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}

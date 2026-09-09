@@ -1,0 +1,93 @@
+/* timetable.css — weekly grid, agenda list, week toolbar, legend */
+
+.sched-toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-4);
+}
+.sched-toolbar .group { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+
+.tt-scroll { overflow: auto; border: 1px solid var(--border); border-radius: var(--radius-m); background: var(--surface); }
+.tt-grid {
+  display: grid;
+  grid-template-columns: 56px repeat(7, minmax(118px, 1fr));
+  min-width: 900px;
+}
+.tt-corner { background: var(--surface-2); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.tt-dayhead {
+  background: var(--surface-2);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 14px; gap: 1px; position: sticky; top: 0; z-index: 3;
+}
+.tt-dayhead small { font-size: 10px; font-weight: 600; color: var(--text-3); letter-spacing: 0.08em; }
+.tt-gutter { position: relative; border-right: 1px solid var(--border); background: var(--surface-2); }
+.tt-gutter .tt-period {
+  position: absolute; left: 0; right: 0;
+  font-size: var(--text-xs); color: var(--text-3);
+  display: flex; align-items: center; justify-content: center;
+  border-bottom: 1px solid var(--border);
+}
+.tt-gutter .tt-period:last-child { border-bottom: 0; }
+.tt-daycell {
+  position: relative;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(var(--row-h) - 1px),
+    var(--border) calc(var(--row-h) - 1px),
+    var(--border) var(--row-h)
+  );
+}
+.tt-daycell:last-child { border-right: 0; }
+
+.tt-card {
+  position: absolute;
+  border-radius: 9px;
+  padding: 6px 8px;
+  overflow: hidden;
+  font-size: var(--text-sm);
+  border: 1px solid transparent;
+  display: flex; flex-direction: column; gap: 3px;
+  box-shadow: var(--shadow-1);
+  cursor: pointer;
+  transition: filter var(--dur) var(--ease);
+}
+.tt-card:hover { filter: brightness(1.03); }
+.tt-card:focus-visible { outline: 2px solid var(--accent); }
+.tt-card.conflict { border-color: var(--danger); box-shadow: 0 0 0 2px var(--danger-soft); }
+.tt-card .cname { font-weight: 700; line-height: 1.3; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; word-break: break-word; }
+.tt-card .cmeta { font-size: 11px; line-height: 1.4; color: color-mix(in srgb, currentColor 85%, transparent); }
+.tt-card .cflag { font-size: 10px; font-weight: 800; align-self: flex-start; padding: 1px 6px; border-radius: 999px; background: color-mix(in srgb, var(--danger) 16%, transparent); color: var(--danger); }
+
+/* per-course accent fill (stylesheet-only, no inline colors) */
+.accent-0 { background: var(--acc-0-soft); color: var(--acc-0); }
+.accent-1 { background: var(--acc-1-soft); color: var(--acc-1); }
+.accent-2 { background: var(--acc-2-soft); color: var(--acc-2); }
+.accent-3 { background: var(--acc-3-soft); color: var(--acc-3); }
+.accent-4 { background: var(--acc-4-soft); color: var(--acc-4); }
+.accent-5 { background: var(--acc-5-soft); color: var(--acc-5); }
+.accent-6 { background: var(--acc-6-soft); color: var(--acc-6); }
+.accent-7 { background: var(--acc-7-soft); color: var(--acc-7); }
+.accent-0 .cname, .accent-1 .cname, .accent-2 .cname, .accent-3 .cname,
+.accent-4 .cname, .accent-5 .cname, .accent-6 .cname, .accent-7 .cname { color: inherit; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: var(--text-xs); color: var(--text-2); margin-top: var(--space-3); }
+.legend .sw { width: 9px; height: 9px; border-radius: 3px; display: inline-block; margin-right: 5px; vertical-align: -0.5px; }
+
+/* agenda (used on all viewports when "요일 목록" selected) */
+.agenda { display: grid; gap: var(--space-3); }
+.agenda-day { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-m); overflow: hidden; }
+.agenda-day-head { padding: 10px 14px; font-weight: 700; font-size: 14px; background: var(--surface-2); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.agenda-item { display: grid; grid-template-columns: 78px 1fr auto; gap: var(--space-3); padding: 10px 14px; border-top: 1px solid var(--border); align-items: start; }
+.agenda-item:first-of-type { border-top: 0; }
+.agenda-time { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--text-2); padding-top: 2px; }
+.agenda-main .n { font-weight: 700; word-break: break-word; }
+.agenda-main .m { color: var(--text-2); font-size: var(--text-sm); margin-top: 2px; display: flex; flex-wrap: wrap; gap: 2px 10px; }
+.agenda-empty-day { padding: 14px; color: var(--text-3); font-size: var(--text-sm); font-style: italic; }
+
+@media (max-width: 640px) {
+  .tt-grid { grid-template-columns: 48px repeat(7, minmax(110px, 1fr)); }
+}

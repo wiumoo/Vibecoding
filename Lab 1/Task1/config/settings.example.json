@@ -1,0 +1,21 @@
+{
+  "$comment": "Runtime settings. Copy to config/settings.json (gitignored). No secrets belong here.",
+  "keychain": {
+    "service": "nju-ehall-personal"
+  },
+  "dataHome": null,
+  "$dataHomeComment": "null -> default: ~/Library/Application Support/NJUEhall",
+  "ehall": {
+    "portalHome": "https://ehall.nju.edu.cn/ywtb-portal/official/index.html",
+    "loginEntry": "https://ehall.nju.edu.cn/login",
+    "casLoginBase": "https://authserver.nju.edu.cn/authserver/login"
+  },
+  "schedule": {
+    "runHoursLocal": [8, 20]
+  },
+  "publish": {
+    "$comment": "Masked data is committed into the shared dev repository under this relative folder.",
+    "repoRoot": null,
+    "dataDir": "Lab 1/Task1/public-data"
+  }
+}

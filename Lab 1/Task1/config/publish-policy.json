@@ -1,0 +1,34 @@
+{
+  "$comment": "Publish policy v2 (user-approved 2026-09-09). PUBLIC docs are built by ADDING only allowlisted fields to an empty object, then leak-checked. profile: name & student id masked (best-judgment: ethnicity/class/internal ids withheld). courses: public. schedule: full times but without precise rooms (best-judgment; see mask docs) — re-enable any field by editing the allow lists below.",
+  "schema_version": 2,
+  "policy_version": "2",
+  "profile_publish": {
+    "allow": [
+      { "field": "XM", "rule": "first_char_only" },
+      { "field": "XH", "rule": "student_id_prefix4" },
+      { "field": "XBMC" },
+      { "field": "YXMC" },
+      { "field": "ZYMC" },
+      { "field": "XZNJ" }
+    ]
+  },
+  "courses_publish": {
+    "allow": ["KCH", "JXBMC", "XF", "PKDWDM_DISPLAY", "SKJS", "XKLY_DISPLAY"]
+  },
+  "schedule_publish": {
+    "mode": "full",
+    "allow": ["course_code", "day_of_week", "start_period", "end_period", "week_start", "week_end", "week_type"]
+  },
+  "always_deny": [
+    "birth_date", "address", "dorm", "id_card", "passport", "bank", "health",
+    "family", "photo", "signature", "qrcode", "internal_user_id",
+    "personalized_url", "session", "token", "ticket", "cookie",
+    "MZMC", "BJMC", "XSBH", "location", "ZCXQJCDD", "course_key"
+  ],
+  "always_deny_patterns": {
+    "auth_header": "^(Authorization|Cookie|Set-Cookie):",
+    "jwt": "[A-Za-z0-9_-]{20,}\\.[A-Za-z0-9_-]{20,}\\.[A-Za-z0-9_-]{20,}",
+    "ticket_param": "(\\?|&)(ticket|token|code|CASTGC)=[^&\\s]+"
+  },
+  "commit_message_prefix": "update"
+}

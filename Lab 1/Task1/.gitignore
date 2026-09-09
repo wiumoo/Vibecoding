@@ -1,0 +1,18 @@
+# Node
+node_modules/
+
+# Runtime settings (created locally from settings.example.json)
+config/settings.json
+
+# Operational / data artifacts never committed
+local/
+logs/
+tmp/
+*.log
+
+# macOS
+.DS_Store
+
+# Possible future data locations — always ignored even if moved here
+private/
+secrets/

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Task1 scheduled sync: daily at 08:00 and 20:00 (Mac local time).
+  Install (after user approval):
+    sed "s|__PROJECT__|/Users/minwoo/Desktop/minwoo/Vibecoding/Lab 1/Task1|" \
+        launchd/agent.plist.example > ~/Library/LaunchAgents/com.personal.nju-ehall-sync.plist
+    launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.personal.nju-ehall-sync.plist
+  Never enables KeepAlive; runs only while logged in and on schedule.
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.personal.nju-ehall-sync</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/opt/homebrew/bin/node</string>
+    <string>__PROJECT__/src/cli/run-scheduled.mjs</string>
+  </array>
+
+  <key>WorkingDirectory</key>
+  <string>__PROJECT__</string>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin</string>
+    <key>HOME</key>
+    <string>/Users/minwoo</string>
+  </dict>
+
+  <key>StartCalendarInterval</key>
+  <array>
+    <dict><key>Hour</key><integer>8</integer><key>Minute</key><integer>0</integer></dict>
+    <dict><key>Hour</key><integer>20</integer><key>Minute</key><integer>0</integer></dict>
+  </array>
+
+  <key>RunAtLoad</key>
+  <false/>
+
+  <key>KeepAlive</key>
+  <false/>
+
+  <key>StandardOutPath</key>
+  <string>/Users/minwoo/Library/Application Support/NJUEhall/logs/agent.stdout.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/minwoo/Library/Application Support/NJUEhall/logs/agent.stderr.log</string>
+</dict>
+</plist>

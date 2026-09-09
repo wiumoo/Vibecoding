@@ -1,0 +1,25 @@
+{
+  "name": "task1-nju-ehall",
+  "private": true,
+  "version": "0.1.0",
+  "description": "NJU ehall personal data snapshot + search + masked publish (Task1)",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "cred:setup": "python3 scripts/cred-setup.py",
+    "cred:verify": "node scripts/cred-verify.mjs",
+    "auth:login": "node src/auth/interactive-login.mjs",
+    "auth:probe": "node src/discovery/session-probe.mjs",
+    "auth:status": "node src/auth/session-status.mjs",
+    "sync": "node src/cli/sync.mjs",
+    "db": "node src/query/db.mjs",
+    "publish": "node src/cli/publish.mjs",
+    "web": "node src/web/server.mjs",
+    "test": "node --test tests/"
+  },
+  "dependencies": {
+    "playwright": "^1.63.0"
+  }
+}

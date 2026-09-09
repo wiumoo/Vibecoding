@@ -1,0 +1,50 @@
+{
+  "$comment": "Collection policy after authenticated Discovery (2026-09-09). allow = business fields to capture from the site (values stored PRIVATE, unmasked). normalization rules keyed by field; 'trim' collapses whitespace runs, 'identity' preserves inner text. This file is the source of truth for collection.",
+  "schema_version": 2,
+  "policy_version": "2",
+  "policy_hash_input": "canonical json of this file",
+  "source_system": "NJU ehall",
+  "endpoints": {
+    "term": "/jwapp/sys/wdkb/modules/jshkcb/dqxnxq.do",
+    "profile": "/jwapp/sys/wdkb/modules/xskcb/cxxsjbxx.do",
+    "courses": "/jwapp/sys/wdkb/modules/xskcb/cxxskclb.do",
+    "app_index": "https://ehallapp.nju.edu.cn/jwapp/sys/wdkb/*default/index.do"
+  },
+  "semester": {
+    "source": "dqxnxq.rows[0]",
+    "code_field": "DM",
+    "fields": {
+      "allow": ["DM", "XNDM", "XQDM", "MC"]
+    }
+  },
+  "identity": {
+    "endpoint": "cxxsjbxx",
+    "allow": ["XH", "XM", "XBMC", "MZMC", "YXMC", "YXDM", "ZYMC", "BJMC", "XZNJ", "XZNJMC", "XSBH"],
+    "key_field": "XH",
+    "required": ["XH", "XM", "YXMC"]
+  },
+  "courses": {
+    "endpoint": "cxxskclb",
+    "allow": ["KCH", "JXBMC", "JXBID", "XF", "PKDWDM_DISPLAY", "SKJS", "XKLY_DISPLAY", "ZCXQJCDD"],
+    "sort_key": ["KCH", "JXBID"],
+    "required": ["KCH", "JXBMC"],
+    "record_key": ["XNXQDM", "KCH", "JXBID"]
+  },
+  "schedule": {
+    "source": "derived from courses[].ZCXQJCDD",
+    "timezone": "Asia/Shanghai",
+    "fields": {
+      "allow": ["course_key", "day", "day_of_week", "start_period", "end_period", "week_start", "week_end", "week_type", "location"]
+    },
+    "sort_key": ["day_of_week", "start_period", "week_start", "course_key"]
+  },
+  "normalization": {
+    "default": "trim",
+    "identity": [],
+    "keep_raw_also": ["ZCXQJCDD"]
+  },
+  "lookup": {
+    "$comment": "non-secret reference tables resolved at runtime and stored in snapshot meta",
+    "day_names": { "一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6, "日": 7, "天": 7 }
+  }
+}
