@@ -14,6 +14,7 @@
     "mail:resolve": "node src/cli/resolve.mjs",
     "mail:triage": "node src/cli/triage.mjs",
     "mail:db": "node src/cli/db.mjs",
+    "mail:agent": "bash scripts/smail-agent.sh",
     "mail:cred-verify": "node src/cli/cred-verify.mjs",
     "mail:probe-send": "node src/cli/probe-send.mjs",
     "mail:llm-verify": "node src/cli/llm-verify.mjs",
