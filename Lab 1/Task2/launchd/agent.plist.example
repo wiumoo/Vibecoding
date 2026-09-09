@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Task2 smail sync: every hour (plan §3). Runs mail:sync (fetch → archive →
+  classify → draft). Never KeepAlive; runs only while logged in.
+
+  Install (after user approval):
+    sed "s|__PROJECT__|/Users/minwoo/Desktop/minwoo/Vibecoding/Lab 1/Task2|" \
+        launchd/agent.plist.example > ~/Library/LaunchAgents/com.personal.nju-smail-sync.plist
+    launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.personal.nju-smail-sync.plist
+
+  Note: PATH includes /opt/homebrew/bin so the draft step can find `claude`. HOME
+  is set; launchd user agents also provide USER/LOGNAME/TMPDIR, which claude's
+  Keychain auth lookup requires (M1 finding) — do not strip them.
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.personal.nju-smail-sync</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/opt/homebrew/bin/node</string>
+    <string>__PROJECT__/src/cli/sync.mjs</string>
+  </array>
+
+  <key>WorkingDirectory</key>
+  <string>__PROJECT__</string>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin</string>
+    <key>HOME</key>
+    <string>/Users/minwoo</string>
+  </dict>
+
+  <key>StartInterval</key>
+  <integer>3600</integer>
+
+  <key>RunAtLoad</key>
+  <false/>
+
+  <key>KeepAlive</key>
+  <false/>
+
+  <key>StandardOutPath</key>
+  <string>/Users/minwoo/Library/Application Support/NJUSmail/logs/agent.stdout.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/minwoo/Library/Application Support/NJUSmail/logs/agent.stderr.log</string>
+</dict>
+</plist>
