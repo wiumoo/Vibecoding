@@ -10,6 +10,7 @@
   "scripts": {
     "cred:setup": "python3 scripts/cred-setup.py",
     "mail:sync": "node src/cli/sync.mjs",
+    "mail:now": "node src/cli/now.mjs",
     "mail:send": "node src/cli/send.mjs",
     "mail:resolve": "node src/cli/resolve.mjs",
     "mail:triage": "node src/cli/triage.mjs",
