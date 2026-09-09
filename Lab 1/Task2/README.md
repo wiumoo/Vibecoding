@@ -14,4 +14,4 @@
 
 ## 1. Overview
 
-- A personal assistant that fetches NJU smail every hour and, **for mail sent by a human, auto-writes an English reply draft** in advance. Drafts cite the personal database (Task1 ehall data) as evidence, and **nothing is sent unless I review and approve it myself** (no auto-send). Drafts can be edited and sent from a desktop file or from the iPhone Mail Drafts mailbox.
+- A personal assistant that fetches NJU smail every hour and, **for mail sent by a human, auto-writes an English reply draft** in advance. **nothing is sent unless I review and approve it myself** (no auto-send). Drafts can be edited and sent from a desktop file or from the iPhone Mail Drafts mailbox.
