@@ -9,6 +9,7 @@
   },
   "scripts": {
     "cred:setup": "python3 scripts/cred-setup.py",
+    "mail:sync": "node src/cli/sync.mjs",
     "mail:cred-verify": "node src/cli/cred-verify.mjs",
     "mail:probe-send": "node src/cli/probe-send.mjs",
     "mail:llm-verify": "node src/cli/llm-verify.mjs",
